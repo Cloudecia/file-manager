@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply text-brand-500;
+    font-family: "Josefin Sans", sans-serif;
+  }
+}
+
+a:hover {
+  color: #04598a !important;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: #04598a !important;
+}
+
+.divider-within-dashed > * + * {
+  border-top: 1px dashed #04598a;
+}
+
+.divider-within-solid > * + * {
+  border-top: 1px solid #04598a;
+}
+
+/* .padding-within-1rem > * + * {
+  padding-block: 1rem;
+} */
