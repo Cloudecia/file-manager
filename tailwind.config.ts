@@ -1,4 +1,4 @@
-import flattenColorPalette from "tailwindcss/lib/util/flattenColorPalette"
+import flattenColorPalette from "tailwindcss/lib/util/flattenColorPalette";
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -15,8 +15,8 @@ export default {
     },
     extend: {
       colors: {
-        'brand': {
-          25: '#f3f8ff',
+        brand: {
+          25: "#f3f8ff",
           50: "#ebf5fb",
           100: "#cddee8",
           200: "#9bbdd0",
@@ -27,21 +27,17 @@ export default {
           700: "#023553",
           800: "#022437",
           900: "#01121c",
-          950: "#010513"
+          950: "#010513",
         },
-      }
+      },
     },
   },
   plugins: [require("tailwindcss-animate"), addVariablesForColors],
-}
-
-
+};
 
 function addVariablesForColors({ addBase, theme }: any) {
   let allColors = flattenColorPalette(theme("colors"));
-  let newVars = Object.fromEntries(
-    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
-  );
+  let newVars = Object.fromEntries(Object.entries(allColors).map(([key, val]) => [`--${key}`, val]));
 
   addBase({
     ":root": newVars,
