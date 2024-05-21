@@ -57,6 +57,17 @@ import {
   DialogOverlay,
   DialogPortal,
 } from "@/components/reusables/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/reusables/ui/alert-dialog";
 
 import { Label } from "@/components/reusables/ui/label";
 
@@ -114,25 +125,19 @@ function NewFolderDialogBox() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
-          <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
+          <DialogTitle>Create a new folder</DialogTitle>
+          <DialogDescription>Enter the name of the folder, that you want to create.</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
               Name
             </Label>
-            <Input id="name" defaultValue="Pedro Duarte" className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input id="username" defaultValue="@peduarte" className="col-span-3" />
+            <Input id="name" defaultValue="" className="col-span-3" />
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit">Save changes</Button>
+          <Button type="submit">Create</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -145,25 +150,19 @@ function RenameDialogBox({ children }) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
-          <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
+          <DialogTitle>Rename</DialogTitle>
+          <DialogDescription>Rename your file/folder</DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
               Name
             </Label>
-            <Input id="name" defaultValue="Pedro Duarte" className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input id="username" defaultValue="@peduarte" className="col-span-3" />
+            <Input id="name" defaultValue="" className="col-span-3" />
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit">Save changes</Button>
+          <Button type="submit">Save</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -172,32 +171,19 @@ function RenameDialogBox({ children }) {
 
 function DeleteDialogBox({ children }) {
   return (
-    <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
-          <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input id="name" defaultValue="Pedro Duarte" className="col-span-3" />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input id="username" defaultValue="@peduarte" className="col-span-3" />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <AlertDialog>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>This action cannot be undone. This will move your files to the trash.</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction>Continue</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
 
