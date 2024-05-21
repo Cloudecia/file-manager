@@ -46,9 +46,9 @@ function Navbar({ className }) {
                 />
               )}
             </div>
-            <h4 className="flex gap-2 text-xl font-semibold justify-center items-center text-brand-500 pt-1">
+            {/* <h4 className="flex gap-2 text-xl font-semibold justify-center items-center text-brand-500 pt-1">
               <span className="text-2xl">{title}</span>
-            </h4>
+            </h4> */}
           </div>
 
           <div className="flex items-center">

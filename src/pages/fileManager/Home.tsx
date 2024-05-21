@@ -26,8 +26,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { MoreHorizontal } from "lucide-react";
-import { useState } from "react";
+import { LucideLayoutGrid, LucideList, MoreHorizontal } from "lucide-react";
+import { useRef, useState } from "react";
 import { MdHome, MdOutlineCreateNewFolder, MdOutlineDriveFolderUpload, MdOutlineUploadFile } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { TbCopyPlus, TbCut, TbDownloadOff, TbInfoCircle } from "react-icons/tb";
@@ -45,6 +45,22 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/reusables/ui/breadcrumb";
+import {
+  Dialog,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+} from "@/components/reusables/ui/dialog";
+
+import { Label } from "@/components/reusables/ui/label";
+
+import { GiClick } from "react-icons/gi";
 
 interface DataTableColumnHeaderProps<TData, TValue> extends React.HTMLAttributes<HTMLDivElement> {
   column: Column<TData, TValue>;
@@ -88,6 +104,103 @@ export function DataTableColumnHeader<TData, TValue>({ column, title, className 
 
 const columnHelper = createColumnHelper<File>();
 
+function NewFolderDialogBox() {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <DropdownMenuItem className="flex gap-2 items-center cursor-pointer" onSelect={(e) => e.preventDefault()}>
+          <MdOutlineCreateNewFolder className="relative bottom-[2px]" /> New Folder
+        </DropdownMenuItem>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Edit profile</DialogTitle>
+          <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Name
+            </Label>
+            <Input id="name" defaultValue="Pedro Duarte" className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              Username
+            </Label>
+            <Input id="username" defaultValue="@peduarte" className="col-span-3" />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button type="submit">Save changes</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function RenameDialogBox({ children }) {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Edit profile</DialogTitle>
+          <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Name
+            </Label>
+            <Input id="name" defaultValue="Pedro Duarte" className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              Username
+            </Label>
+            <Input id="username" defaultValue="@peduarte" className="col-span-3" />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button type="submit">Save changes</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function DeleteDialogBox({ children }) {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Edit profile</DialogTitle>
+          <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Name
+            </Label>
+            <Input id="name" defaultValue="Pedro Duarte" className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              Username
+            </Label>
+            <Input id="username" defaultValue="@peduarte" className="col-span-3" />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button type="submit">Save changes</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function RowActionsDropDown() {
   return (
     <DropdownMenuContent align="end" className="min-w-52">
@@ -95,13 +208,18 @@ function RowActionsDropDown() {
         <TbInfoCircle /> File Information
       </DropdownMenuItem>
       <DropdownMenuSeparator />
+
       <DropdownMenuItem className="flex gap-2 items-center cursor-pointer">
         <TbDownloadOff /> Download
       </DropdownMenuItem>
-      <DropdownMenuItem className="flex gap-2 items-center cursor-pointer">
-        <MdOutlineDriveFileRenameOutline /> Rename
-      </DropdownMenuItem>
+      <RenameDialogBox>
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="flex gap-2 items-center cursor-pointer">
+          <MdOutlineDriveFileRenameOutline /> Rename
+        </DropdownMenuItem>
+      </RenameDialogBox>
+
       <DropdownMenuSeparator />
+
       <DropdownMenuItem className="flex gap-2 items-center cursor-pointer">
         <TbCut /> Cut
       </DropdownMenuItem>
@@ -112,9 +230,11 @@ function RowActionsDropDown() {
         <ImPaste /> Paste
       </DropdownMenuItem>
       <DropdownMenuSeparator />
-      <DropdownMenuItem className="flex gap-2 items-center cursor-pointer">
-        <MdOutlineDelete /> Delete
-      </DropdownMenuItem>
+      <DeleteDialogBox>
+        <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="flex gap-2 items-center cursor-pointer">
+          <MdOutlineDelete /> Delete
+        </DropdownMenuItem>
+      </DeleteDialogBox>
     </DropdownMenuContent>
   );
 }
@@ -136,7 +256,7 @@ const columns = [
     enableSorting: false,
     enableHiding: false,
     meta: {
-      className: "basis-1/10",
+      className: "basis-1/12",
     },
   }),
   columnHelper.accessor((row) => row.attributes.name, {
@@ -148,7 +268,7 @@ const columns = [
       </div>
     ),
     meta: {
-      className: "basis-6/12",
+      className: "basis-6/12 grow",
     },
   }),
   columnHelper.accessor((row) => row.attributes.lastModifiedOn, {
@@ -196,10 +316,11 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData, Tvalue>) {
+export function DataTable<TData, TValue>({ columns, data, view }: DataTableProps<TData, Tvalue>) {
   const [rowSelection, setRowSelection] = useState({});
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
+  const [dragOver, setDragOver] = useState(false);
 
   const table = useReactTable({
     data,
@@ -217,110 +338,169 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
     },
   });
 
+  // TODO 240522 - FACING ISSUE IN IMPLEMENTING GRID VIEW, I HAVE SET UP THE STATE, BUT THE DESIGN IS BAD, VERY BAD
+
+  function dropHandler(e) {
+    e.preventDefault();
+    setDragOver(false);
+    console.log({ e });
+    const files = e.dataTransfer.files;
+
+    if (!files.length) {
+      return;
+    }
+
+    uploadFiles(files);
+  }
+
+  function dragOverHandler(e) {
+    e.preventDefault();
+    setDragOver(true);
+  }
+
+  function dragLeaveHandler(e) {
+    e.preventDefault();
+    setDragOver(false);
+  }
+
+  function uploadFiles(files) {
+    alert("Check Console, this upload function is going to upload the file to the server");
+    console.log(files);
+  }
+
   return (
-    <>
-      <div className="flex items-center justify-between">
-        <Input
-          placeholder="Filter by filename"
-          value={(table.getColumn("fileName")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn("fileName")?.setFilterValue(event.target.value)}
-          className="max-w-sm"
-        />
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="h-12">Add New</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="min-w-52">
-            <DropdownMenuItem className="flex gap-2 items-center cursor-pointer">
-              <MdOutlineCreateNewFolder className="relative bottom-[2px]" /> New Folder
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="flex gap-2 items-center cursor-pointer">
-              <MdOutlineUploadFile className="relative bottom-[2px]" /> File Upload
-            </DropdownMenuItem>
-            <DropdownMenuItem className="flex gap-2 items-center cursor-pointer">
-              <MdOutlineDriveFolderUpload className="relative bottom-[2px]" /> Folder Upload
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id} className={`${header.column.columnDef?.meta && header.column.columnDef.meta?.className}`}>
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <ContextMenu>
-                <ContextMenuTrigger>
-                  <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className="cursor-pointer">
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className={`${cell.column.columnDef?.meta && cell.column.columnDef.meta?.className}`}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </ContextMenuTrigger>
-                <ContextMenuContent className="w-52 bg-white">
-                  <ContextMenuItem className="flex gap-2 items-center cursor-pointer">
-                    <TbInfoCircle /> File Information
-                  </ContextMenuItem>
-                  <ContextMenuSeparator />
-                  <ContextMenuItem className="flex gap-2 items-center cursor-pointer">
-                    <TbDownloadOff /> Download
-                  </ContextMenuItem>
-                  <ContextMenuItem className="flex gap-2 items-center cursor-pointer">
-                    <MdOutlineDriveFileRenameOutline /> Rename
-                  </ContextMenuItem>
-                  <ContextMenuSeparator />
-                  <ContextMenuItem className="flex gap-2 items-center cursor-pointer">
-                    <TbCut /> Cut
-                  </ContextMenuItem>
-                  <ContextMenuItem className="flex gap-2 items-center cursor-pointer">
-                    <TbCopyPlus /> Copy
-                  </ContextMenuItem>
-                  <ContextMenuItem className="flex gap-2 items-center cursor-pointer">
-                    <ImPaste /> Paste
-                  </ContextMenuItem>
-                  <ContextMenuSeparator />
-                  <ContextMenuItem className="flex gap-2 items-center cursor-pointer">
-                    <MdOutlineDelete /> Delete
-                  </ContextMenuItem>
-                </ContextMenuContent>
-              </ContextMenu>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
+    <main onDrop={dropHandler} onDragOver={dragOverHandler} onDragLeave={dragLeaveHandler} className={dragOver && "relative"}>
+      {dragOver && (
+        <div className="absolute inset-0 bg-white/80 z-10 border-[1px] border-brand-500 border-dotted grid place-content-center">
+          <p className="text-4xl">Drop your files to Upload</p>
+        </div>
+      )}
+      <div className="relative flex-col gap-4">
+        <div className="flex flex-col md:flex-row  items-center justify-between gap-4 mb-4">
+          <Input
+            placeholder="Filter by filename"
+            value={(table.getColumn("fileName")?.getFilterValue() as string) ?? ""}
+            onChange={(event) => table.getColumn("fileName")?.setFilterValue(event.target.value)}
+            className="max-w-sm"
+          />
+          {table.getFilteredSelectedRowModel().rows.length > 0 && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-full md:w-auto h-12 flex gap-2 me-auto">
+                  <GiClick className="w-4 h-4 relative bottom-[1px]" /> <span>{table.getFilteredSelectedRowModel().rows.length} selected</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-52">
+                <DropdownMenuItem className="flex gap-2 items-center cursor-pointer">
+                  <MdOutlineUploadFile className="relative bottom-[2px]" /> Download
+                </DropdownMenuItem>
+                <DropdownMenuItem className="flex gap-2 items-center cursor-pointer">
+                  <MdOutlineDriveFolderUpload className="relative bottom-[2px]" /> Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
-        </TableBody>
-      </Table>
 
-      <div className="flex-1 text-sm text-muted-foreground">
-        {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s) selected.
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="h-12 w-full md:w-auto">Add New</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-52">
+              <NewFolderDialogBox />
+
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="flex gap-2 items-center cursor-pointer">
+                <MdOutlineUploadFile className="relative bottom-[2px]" /> File Upload
+              </DropdownMenuItem>
+              <DropdownMenuItem className="flex gap-2 items-center cursor-pointer">
+                <MdOutlineDriveFolderUpload className="relative bottom-[2px]" /> Folder Upload
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <Table>
+          <TableHeader className={view && "hidden"}>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id} className={`${header.column.columnDef?.meta && header.column.columnDef.meta?.className}`}>
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody className={view && "grid grid-cols-4"}>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <ContextMenu>
+                  <ContextMenuTrigger>
+                    <TableRow key={row.id} data-state={row.getIsSelected() && "selected"} className={cn(view && "border-none flex flex-col", "cursor-pointer")}>
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id} className={`${cell.column.columnDef?.meta && cell.column.columnDef.meta?.className}`}>
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </ContextMenuTrigger>
+                  <ContextMenuContent className="w-52 bg-white">
+                    <ContextMenuItem className="flex gap-2 items-center cursor-pointer">
+                      <TbInfoCircle /> File Information
+                    </ContextMenuItem>
+                    <ContextMenuSeparator />
+                    <ContextMenuItem className="flex gap-2 items-center cursor-pointer">
+                      <TbDownloadOff /> Download
+                    </ContextMenuItem>
+                    <RenameDialogBox>
+                      <ContextMenuItem className="flex gap-2 items-center cursor-pointer" onSelect={(e) => e.preventDefault()}>
+                        <MdOutlineDriveFileRenameOutline /> Rename
+                      </ContextMenuItem>
+                    </RenameDialogBox>
+
+                    <ContextMenuSeparator />
+                    <ContextMenuItem className="flex gap-2 items-center cursor-pointer">
+                      <TbCut /> Cut
+                    </ContextMenuItem>
+                    <ContextMenuItem className="flex gap-2 items-center cursor-pointer">
+                      <TbCopyPlus /> Copy
+                    </ContextMenuItem>
+                    <ContextMenuItem className="flex gap-2 items-center cursor-pointer">
+                      <ImPaste /> Paste
+                    </ContextMenuItem>
+                    <ContextMenuSeparator />
+                    <DeleteDialogBox>
+                      <ContextMenuItem className="flex gap-2 items-center cursor-pointer" onSelect={(e) => e.preventDefault()}>
+                        <MdOutlineDelete /> Delete
+                      </ContextMenuItem>
+                    </DeleteDialogBox>
+                  </ContextMenuContent>
+                </ContextMenu>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+        <div className="flex-1 text-sm text-muted-foreground mt-4">
+          {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s) selected.
+        </div>
       </div>
-    </>
+    </main>
   );
 }
 
 const Home = () => {
+  const [gridView, setGridView] = useState(false);
+
   return (
     <Container>
-      <SectionWrapper noDivider>
+      <SectionWrapper noDivider classes={"flex flex-row justify-between"}>
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -355,12 +535,51 @@ const Home = () => {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
+        <div onClick={() => setGridView((val) => !val)} className="cursor-pointer hidden">
+          {gridView ? <LucideLayoutGrid /> : <LucideList />}
+        </div>
       </SectionWrapper>
+
       <SectionWrapper>
-        <DataTable columns={columns} data={fileList} />
+        <DataTable columns={columns} data={fileList} view={gridView} />
       </SectionWrapper>
+      {/* <Test /> */}
     </Container>
   );
 };
 
 export default Home;
+
+// test box
+function Test() {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <button>test</button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Edit profile</DialogTitle>
+          <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Name
+            </Label>
+            <Input id="name" defaultValue="Pedro Duarte" className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              Username
+            </Label>
+            <Input id="username" defaultValue="@peduarte" className="col-span-3" />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button type="submit">Save changes</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
